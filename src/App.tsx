@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
+import GlobalStyle from "./globalStyle";
 import Logo from "./components/Logo/Logo";
 import Filter from "./components/Filter/Filter";
 import Switcher from "./components/Switcher/Switcher";
 import TicketList from "./components/TicketList/TicketList";
-import GlobalStyle from "./globalStyle";
+import api from "./api";
 
 const Container = styled.div`
   margin: 0 auto;
@@ -27,6 +28,19 @@ const RightColumn = styled.div`
 `;
 
 function App() {
+  const [tickets, setTickets] = useState([]);
+
+  useEffect(() => {
+    api.get("/search").then((response) => {
+      const { searchId } = response.data;
+      api
+        .get(`/tickets?searchId=${searchId}`)
+        .then((response) => setTickets(response.data.tickets.slice(0, 5)));
+    });
+  }, []);
+
+  console.log(tickets);
+
   return (
     <>
       <GlobalStyle />
@@ -38,7 +52,7 @@ function App() {
           </LeftColumn>
           <RightColumn>
             <Switcher />
-            <TicketList />
+            <TicketList tickets={tickets} />
           </RightColumn>
         </Grid>
       </Container>

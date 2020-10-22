@@ -1,11 +1,16 @@
 import React from "react";
 import Ticket from "../Ticket/Ticket";
 
-export default function TicketList() {
+type Props = {
+  tickets: Array<any>;
+};
+
+export default function TicketLis({ tickets }: Props) {
   return (
     <div>
-      <Ticket />
-      <Ticket />
+      {tickets.map((ticket: any) => (
+        <Ticket key={ticket.price + 222} ticket={ticket} />
+      ))}
     </div>
   );
 }

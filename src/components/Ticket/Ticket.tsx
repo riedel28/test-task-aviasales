@@ -86,40 +86,51 @@ const RightColumn = styled.div`
   flex: 1;
 `;
 
-export default function Ticket() {
+export default function Ticket({ ticket }: any) {
+  const displayFlightTime = (duration: number) => {
+    const hours = Math.floor(duration / 60);
+    const minutes = Math.round((hours - hours) * 60);
+
+    return `${hours}ч ${minutes}м`;
+  };
+
   return (
     <TicketWrapper>
       <LeftColumn>
-        <Price>13 400 Р</Price>
+        <Price>{ticket.price} Р</Price>
         <InfoWrapper>
-          <Subtitle>Mow - Hkt</Subtitle>
-          <Info>10:45 – 08:00</Info>
+          <Subtitle>
+            {ticket.segments[0].origin} - {ticket.segments[0].destination}
+          </Subtitle>
+          <Info>{new Date(ticket.segments[0].date).toLocaleDateString()}</Info>
         </InfoWrapper>
         <InfoWrapper>
-          <Subtitle>Mow - Hkt</Subtitle>
-          <Info>10:45 – 08:00</Info>
+          <Subtitle>
+            {ticket.segments[1].origin} - {ticket.segments[1].destination}
+          </Subtitle>
+          <Info>{ticket.segments[1].date}</Info>
         </InfoWrapper>
       </LeftColumn>
 
       <MiddleColumn>
         <InfoWrapper>
           <Subtitle>В пути</Subtitle>
-          <Info>21ч 15м</Info>
+          <Info>{displayFlightTime(ticket.segments[0].duration)}</Info>
         </InfoWrapper>
         <InfoWrapper>
           <Subtitle>В пути</Subtitle>
-          <Info>13ч 30м</Info>
+          <Info>{displayFlightTime(ticket.segments[1].duration)}</Info>
         </InfoWrapper>
       </MiddleColumn>
       <RightColumn>
         <CarrierLogo />
         <InfoWrapper>
-          <Subtitle>2 пересадки</Subtitle>
-          <Info>HKG, JNB</Info>
+          <Subtitle>{ticket.segments[0].stops.length} пересадки</Subtitle>
+          <Info>{ticket.segments[0].stops.join(", ")}</Info>
         </InfoWrapper>
         <InfoWrapper>
-          <Subtitle>1 пересадка</Subtitle>
-          <Info>HKG</Info>
+          <Subtitle>{ticket.segments[1].stops.length} пересадка</Subtitle>
+          <Info>{ticket.segments[1].stops.join(", ")}</Info>
         </InfoWrapper>
       </RightColumn>
     </TicketWrapper>
