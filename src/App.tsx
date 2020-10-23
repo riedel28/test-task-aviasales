@@ -6,7 +6,7 @@ import Logo from "./components/Logo/Logo";
 import Filter from "./components/Filter/Filter";
 import Switcher from "./components/Switcher/Switcher";
 import TicketList from "./components/TicketList/TicketList";
-import api from "./api";
+import { getTickets } from "./api";
 
 const Container = styled.div`
   margin: 0 auto;
@@ -29,17 +29,27 @@ const RightColumn = styled.div`
 
 function App() {
   const [tickets, setTickets] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    api.get("/search").then((response) => {
-      const { searchId } = response.data;
-      api
-        .get(`/tickets?searchId=${searchId}`)
-        .then((response) => setTickets(response.data.tickets.slice(0, 5)));
-    });
-  }, []);
+    const fetchTickets = async () => {
+      setError(null);
+      setIsLoading(true);
 
-  console.log(tickets);
+      try {
+        const tickets = await getTickets();
+
+        setTickets(tickets);
+      } catch (err) {
+        setError(err);
+      }
+
+      setIsLoading(false);
+    };
+
+    fetchTickets();
+  }, []);
 
   return (
     <>
@@ -52,7 +62,8 @@ function App() {
           </LeftColumn>
           <RightColumn>
             <Switcher />
-            <TicketList tickets={tickets} />
+            {isLoading && <p>Loading...</p>}
+            {error ? error : <TicketList tickets={tickets} />}
           </RightColumn>
         </Grid>
       </Container>
