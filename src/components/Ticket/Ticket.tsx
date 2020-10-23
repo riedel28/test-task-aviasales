@@ -1,24 +1,19 @@
 import React from "react";
 import styled from "styled-components";
 
-import logo from "./S7 Logo.png";
-
 const TicketWrapper = styled.div`
-  padding: 0 20px 20px;
-
   display: flex;
-  /* flex-direction: column; */
+  padding: 0 20px 20px;
 
   background: #ffffff;
   box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
 
-  /* min-height: 184px; */
+  min-height: 184px;
   margin-bottom: 20px;
 `;
 
-const CarrierLogo = styled.div`
-  background-image: url(${logo});
+const CarrierLogo = styled.img`
   margin-bottom: 20px;
   margin-top: 20px;
   display: block;
@@ -35,7 +30,7 @@ const Price = styled.p`
   font-size: 24px;
   font-style: normal;
   font-weight: 600;
-  /* line-height: 24px; */
+
   letter-spacing: 0px;
   text-align: left;
 
@@ -87,50 +82,89 @@ const RightColumn = styled.div`
 `;
 
 export default function Ticket({ ticket }: any) {
-  const displayFlightTime = (duration: number) => {
+  const formatFlightTime = (duration: number) => {
     const hours = Math.floor(duration / 60);
     const minutes = Math.round((hours - hours) * 60);
 
     return `${hours}ч ${minutes}м`;
   };
 
+  const { price, segments } = ticket;
+  const [toFlight, fromFlight] = segments;
+
+  const formatTime = (departureDate: string, duration: number) => {
+    const departureTimestamp = Date.parse(departureDate);
+    const durationInMs = duration * 60 * 1000;
+    const arrivalTimestamp = departureTimestamp + durationInMs;
+
+    const formatTimeToLocalString = (timestamp: any) => {
+      return new Date(timestamp).toLocaleTimeString("ru-RU", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    };
+
+    const departureTime = formatTimeToLocalString(departureTimestamp);
+    const arrivalTime = formatTimeToLocalString(arrivalTimestamp);
+
+    return `${departureTime} - ${arrivalTime}`;
+  };
+
   return (
     <TicketWrapper>
       <LeftColumn>
-        <Price>{ticket.price} Р</Price>
+        <Price>{price.toLocaleString("ru-RU")} Р</Price>
         <InfoWrapper>
           <Subtitle>
-            {ticket.segments[0].origin} - {ticket.segments[0].destination}
+            {toFlight.origin} - {toFlight.destination}
           </Subtitle>
-          <Info>{new Date(ticket.segments[0].date).toLocaleDateString()}</Info>
+          <Info>{formatTime(toFlight.date, toFlight.duration)}</Info>
         </InfoWrapper>
         <InfoWrapper>
           <Subtitle>
-            {ticket.segments[1].origin} - {ticket.segments[1].destination}
+            {fromFlight.origin} - {fromFlight.destination}
           </Subtitle>
-          <Info>{ticket.segments[1].date}</Info>
+          <Info>{formatTime(fromFlight.date, fromFlight.duration)}</Info>
         </InfoWrapper>
       </LeftColumn>
 
       <MiddleColumn>
         <InfoWrapper>
           <Subtitle>В пути</Subtitle>
-          <Info>{displayFlightTime(ticket.segments[0].duration)}</Info>
+          <Info>{formatFlightTime(toFlight.duration)}</Info>
         </InfoWrapper>
         <InfoWrapper>
           <Subtitle>В пути</Subtitle>
-          <Info>{displayFlightTime(ticket.segments[1].duration)}</Info>
+          <Info>{formatFlightTime(fromFlight.duration)}</Info>
         </InfoWrapper>
       </MiddleColumn>
       <RightColumn>
-        <CarrierLogo />
+        <CarrierLogo src={`//pics.avs.io/99/36/${ticket.carrier}.png`} />
         <InfoWrapper>
-          <Subtitle>{ticket.segments[0].stops.length} пересадки</Subtitle>
-          <Info>{ticket.segments[0].stops.join(", ")}</Info>
+          {toFlight.stops.length > 0 ? (
+            <>
+              <Subtitle>{toFlight.stops.length} пересадки</Subtitle>
+              <Info>{toFlight.stops.join(", ")}</Info>
+            </>
+          ) : (
+            <>
+              <Subtitle>Без пересадок</Subtitle>
+              <Info>&nbsp;</Info>
+            </>
+          )}
         </InfoWrapper>
         <InfoWrapper>
-          <Subtitle>{ticket.segments[1].stops.length} пересадка</Subtitle>
-          <Info>{ticket.segments[1].stops.join(", ")}</Info>
+          {fromFlight.stops.length > 0 ? (
+            <>
+              <Subtitle>{fromFlight.stops.length} пересадки</Subtitle>
+              <Info>{fromFlight.stops.join(", ")}</Info>
+            </>
+          ) : (
+            <>
+              <Subtitle>Без пересадок</Subtitle>
+              <Info>&nbsp;</Info>
+            </>
+          )}
         </InfoWrapper>
       </RightColumn>
     </TicketWrapper>
