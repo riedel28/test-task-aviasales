@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import styled from "styled-components";
 
-const SwitcherWrapper = styled.div`
+const TabsWrapper = styled.div`
   display: flex;
   width: 100%;
   margin-bottom: 20px;
@@ -34,25 +34,33 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
-export default function Switcher() {
-  const [searchParam, setSearchParam] = useState("cheap");
+export default function Switcher({ onSort }: any) {
+  const [sortParam, setSortParam] = useState("price");
+
+  const handleSortParam = useCallback(
+    (param: "price" | "time") => {
+      setSortParam(param);
+      onSort(param);
+    },
+    [onSort]
+  );
 
   return (
-    <SwitcherWrapper>
+    <TabsWrapper>
       <Button
-        onClick={() => setSearchParam("cheap")}
+        onClick={() => handleSortParam("price")}
         right
-        active={searchParam === "cheap"}
+        active={sortParam === "price"}
       >
         Самый дешевый
       </Button>
       <Button
-        onClick={() => setSearchParam("fast")}
+        onClick={() => handleSortParam("time")}
         left
-        active={searchParam === "fast"}
+        active={sortParam === "time"}
       >
         Самый быстрый
       </Button>
-    </SwitcherWrapper>
+    </TabsWrapper>
   );
 }
