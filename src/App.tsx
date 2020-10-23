@@ -8,6 +8,8 @@ import Switcher from "./components/Tabs/Tabs";
 import TicketList from "./components/TicketList/TicketList";
 import { getTickets } from "./api";
 
+import { FilterType } from "./types";
+
 const Container = styled.div`
   margin: 0 auto;
   width: 754px;
@@ -33,6 +35,13 @@ function App() {
   const [error, setError] = useState(null);
 
   const [sortBy, setSortBy] = useState("price");
+  const [filters, setFilter] = useState<Array<FilterType>>([
+    "all",
+    "no-stops",
+    "1 stop",
+    "2 stops",
+    "3 stops",
+  ]);
 
   useEffect(() => {
     const fetchTickets = async () => {
@@ -66,7 +75,41 @@ function App() {
 
   const handleSort = sortBy === "time" ? sortByTime : sortByPrice;
 
-  console.log(tickets);
+  const handleFilter = (item: any) => {
+    const toFlightStopsLength = item.segments[0].stops.length;
+    const fromFlightStopsLength = item.segments[1].stops.length;
+
+    if (filters.includes("all")) {
+      return item;
+    }
+    if (filters.includes("no-stops")) {
+      if (toFlightStopsLength === 0 && fromFlightStopsLength === 0) {
+        return item;
+      }
+    }
+
+    if (filters.includes("1 stop")) {
+      if (toFlightStopsLength === 1 && fromFlightStopsLength === 1) {
+        return item;
+      }
+    }
+
+    if (filters.includes("2 stops")) {
+      if (toFlightStopsLength === 2 && fromFlightStopsLength === 2) {
+        return item;
+      }
+    }
+
+    if (filters.includes("3 stops")) {
+      if (toFlightStopsLength === 3 && fromFlightStopsLength === 3) {
+        return item;
+      }
+    }
+
+    // return item;
+  };
+
+  console.log(filters);
 
   return (
     <>
@@ -75,12 +118,18 @@ function App() {
         <Logo />
         <Grid>
           <LeftColumn>
-            <Filter />
+            <Filter filters={filters} onFilter={setFilter} />
           </LeftColumn>
           <RightColumn>
             <Switcher onSort={setSortBy} />
             {isLoading && <p>Loading...</p>}
-            {error ? error : <TicketList tickets={tickets.sort(handleSort)} />}
+            {error ? (
+              "Ошибка. Не удалось загрузить список билетов"
+            ) : (
+              <TicketList
+                tickets={tickets.filter(handleFilter).sort(handleSort)}
+              />
+            )}
           </RightColumn>
         </Grid>
       </Container>

@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
+
+import { FilterType } from "../../types";
 
 const Wrapper = styled.div`
   padding: 10px 0;
@@ -26,15 +28,17 @@ const Option = styled.div`
 
   &:hover {
     background: #f1fcff;
+    cursor: pointer;
   }
 `;
 
-const OptionLabel = styled.label`
+const Label = styled.label`
   font-family: Open Sans;
   font-style: normal;
   font-weight: normal;
   font-size: 13px;
   line-height: 20px;
+  cursor: pointer;
 `;
 
 const Checkbox = styled.input.attrs({ type: "checkbox" })`
@@ -42,32 +46,73 @@ const Checkbox = styled.input.attrs({ type: "checkbox" })`
   margin-right: 10px;
   width: 20px;
   height: 20px;
+  cursor: pointer;
 `;
 
-function Filter() {
+const checkboxes = [
+  {
+    name: "all",
+    label: "Все пересадки",
+  },
+  {
+    name: "no-stops",
+    label: "Без пересадок",
+  },
+  {
+    name: "1 stop",
+    label: "1 пересадка",
+  },
+  {
+    name: "2 stops",
+    label: "2 пересадки",
+  },
+  {
+    name: "3 stops",
+    label: "3 пересадки",
+  },
+];
+
+type Props = {
+  filters: Array<FilterType>;
+  onFilter: (filters: Array<FilterType>) => void;
+};
+
+function Filter({ filters, onFilter }: Props) {
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const checkboxName = e.target.name as FilterType;
+
+      if (filters.includes(checkboxName)) {
+        const filtersWithoutChosenCheckbox = filters
+          .filter((filterName: FilterType) => filterName !== checkboxName)
+          .filter((filterName: FilterType) => filterName !== "all");
+
+        onFilter(filtersWithoutChosenCheckbox);
+      } else {
+        if (filters.length === 3) {
+          onFilter([...filters, checkboxName, "all"]);
+        } else {
+          onFilter([...filters, checkboxName]);
+        }
+      }
+    },
+    [filters, onFilter]
+  );
+
   return (
     <Wrapper>
       <Heading>Количество пересадок</Heading>
-      <Option>
-        <Checkbox />
-        <OptionLabel>Все</OptionLabel>
-      </Option>
-      <Option>
-        <Checkbox />
-        <OptionLabel>Без пересадок</OptionLabel>
-      </Option>
-      <Option>
-        <Checkbox />
-        <OptionLabel>1 пересадка</OptionLabel>
-      </Option>
-      <Option>
-        <Checkbox />
-        <OptionLabel>2 пересадки</OptionLabel>
-      </Option>
-      <Option>
-        <Checkbox />
-        <OptionLabel>3 пересадки</OptionLabel>
-      </Option>
+      {checkboxes.map((checkbox: any) => (
+        <Option key={checkbox.name}>
+          <Checkbox
+            id={checkbox.name}
+            name={checkbox.name}
+            checked={filters.includes(checkbox.name) || filters.includes("all")}
+            onChange={handleChange}
+          />
+          <Label htmlFor={checkbox.name}>{checkbox.label}</Label>
+        </Option>
+      ))}
     </Wrapper>
   );
 }

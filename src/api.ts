@@ -11,7 +11,7 @@ export const getSearchId = async () => {
   return searchId;
 };
 
-export const getTickets = async (amount = 5) => {
+export const getTickets = async (amount = 50) => {
   const searchId = await getSearchId();
   const response = await api.get(`/tickets?searchId=${searchId}`);
 

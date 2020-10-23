@@ -6,6 +6,7 @@ type Props = {
 };
 
 export default function TicketLis({ tickets }: Props) {
+  console.log("Filtered tickets", tickets);
   return (
     <div>
       {tickets.map((ticket: any) => (
