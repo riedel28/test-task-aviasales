@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import styled from "styled-components";
 
 import { FilterType } from "../../types";
@@ -51,10 +51,6 @@ const Checkbox = styled.input.attrs({ type: "checkbox" })`
 
 const checkboxes = [
   {
-    name: "all",
-    label: "Все пересадки",
-  },
-  {
     name: "no-stops",
     label: "Без пересадок",
   },
@@ -78,36 +74,56 @@ type Props = {
 };
 
 function Filter({ filters, onFilter }: Props) {
+  const [checkedList, setCheckedList] = useState<Array<FilterType>>(filters);
+  const [allChecked, setAllChecked] = useState(false);
+
+  useEffect(() => {
+    setAllChecked(checkedList.length === checkboxes.length);
+    onFilter(allChecked ? ["all", ...checkedList] : checkedList);
+  }, [allChecked, checkedList, onFilter]);
+
+  const handleCheckAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const allCheckboxNames = checkboxes.map(
+      (checkbox) => checkbox.name as FilterType
+    );
+
+    setCheckedList(e.target.checked ? allCheckboxNames : []);
+    setAllChecked(e.target.checked);
+  };
+
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const checkboxName = e.target.name as FilterType;
 
-      if (filters.includes(checkboxName)) {
-        const filtersWithoutChosenCheckbox = filters
-          .filter((filterName: FilterType) => filterName !== checkboxName)
-          .filter((filterName: FilterType) => filterName !== "all");
-
-        onFilter(filtersWithoutChosenCheckbox);
+      if (e.target.checked) {
+        setCheckedList([...checkedList, checkboxName]);
       } else {
-        if (filters.length === 3) {
-          onFilter([...filters, checkboxName, "all"]);
-        } else {
-          onFilter([...filters, checkboxName]);
-        }
+        setCheckedList(
+          checkedList.filter((name: string) => name !== checkboxName)
+        );
       }
     },
-    [filters, onFilter]
+    [checkedList]
   );
 
   return (
     <Wrapper>
       <Heading>Количество пересадок</Heading>
+      <Option>
+        <Checkbox
+          id="all"
+          name="all"
+          checked={allChecked}
+          onChange={handleCheckAll}
+        />
+        <Label htmlFor="all">Все пересадки</Label>
+      </Option>
       {checkboxes.map((checkbox: any) => (
         <Option key={checkbox.name}>
           <Checkbox
             id={checkbox.name}
             name={checkbox.name}
-            checked={filters.includes(checkbox.name) || filters.includes("all")}
+            checked={checkedList.includes(checkbox.name)}
             onChange={handleChange}
           />
           <Label htmlFor={checkbox.name}>{checkbox.label}</Label>

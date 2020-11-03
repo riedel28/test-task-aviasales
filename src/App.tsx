@@ -8,7 +8,7 @@ import Switcher from "./components/Tabs/Tabs";
 import TicketList from "./components/TicketList/TicketList";
 import { getTickets } from "./api";
 
-import { FilterType } from "./types";
+import { FilterType, Ticket } from "./types";
 
 const Container = styled.div`
   margin: 0 auto;
@@ -36,7 +36,6 @@ function App() {
 
   const [sortBy, setSortBy] = useState("price");
   const [filters, setFilter] = useState<Array<FilterType>>([
-    "all",
     "no-stops",
     "1 stop",
     "2 stops",
@@ -66,7 +65,7 @@ function App() {
     return a.price - b.price;
   };
 
-  const sortByTime = (a: any, b: any) => {
+  const sortByTime = (a: Ticket, b: Ticket) => {
     const totalFlightTime1 = a.segments[0].duration + a.segments[1].duration;
     const totalFlightTime2 = b.segments[0].duration + b.segments[1].duration;
 
@@ -75,13 +74,14 @@ function App() {
 
   const handleSort = sortBy === "time" ? sortByTime : sortByPrice;
 
-  const handleFilter = (item: any) => {
+  const handleFilter = (item: Ticket) => {
     const toFlightStopsLength = item.segments[0].stops.length;
     const fromFlightStopsLength = item.segments[1].stops.length;
 
     if (filters.includes("all")) {
       return item;
     }
+
     if (filters.includes("no-stops")) {
       if (toFlightStopsLength === 0 && fromFlightStopsLength === 0) {
         return item;
@@ -105,11 +105,7 @@ function App() {
         return item;
       }
     }
-
-    // return item;
   };
-
-  console.log(filters);
 
   return (
     <>
