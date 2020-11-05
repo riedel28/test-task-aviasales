@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import {
+  Container,
+  Grid,
+  LeftColumn,
+  RightColumn,
+  ErrorMessage,
+} from "./App.styles";
 
 import GlobalStyle from "./globalStyle";
 import Logo from "./components/Logo/Logo";
@@ -9,25 +15,6 @@ import TicketList from "./components/TicketList/TicketList";
 import { getTickets } from "./api";
 
 import { FilterType, Ticket } from "./types";
-
-const Container = styled.div`
-  margin: 0 auto;
-  width: 754px;
-  padding: 50px 0;
-`;
-
-const Grid = styled.div`
-  display: flex;
-  justify-content: space-between;
-`;
-
-const LeftColumn = styled.div`
-  width: 232px;
-`;
-
-const RightColumn = styled.div`
-  width: 502px;
-`;
 
 function App() {
   const [tickets, setTickets] = useState([]);
@@ -120,7 +107,9 @@ function App() {
             <Switcher onSort={setSortBy} />
             {isLoading && <p>Loading...</p>}
             {error ? (
-              "Ошибка. Не удалось загрузить список билетов"
+              <ErrorMessage>
+                Ошибка. Не удалось загрузить список билетов
+              </ErrorMessage>
             ) : (
               <TicketList
                 tickets={tickets.filter(handleFilter).sort(handleSort)}

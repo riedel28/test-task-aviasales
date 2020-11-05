@@ -1,10 +1,6 @@
 import React from "react";
-import styled from "styled-components";
 
-const LogoContainer = styled.div`
-  text-align: center;
-  margin-bottom: 30px;
-`;
+import { LogoContainer } from "./Logo.styles";
 
 export default function Logo() {
   return (

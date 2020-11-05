@@ -1,4 +1,5 @@
 import React from "react";
+
 import Ticket from "../Ticket/Ticket";
 
 type Props = {
