@@ -48,7 +48,7 @@ function App() {
     fetchTickets();
   }, []);
 
-  const sortByPrice = (a: any, b: any) => {
+  const sortByPrice = (a: Ticket, b: Ticket) => {
     return a.price - b.price;
   };
 

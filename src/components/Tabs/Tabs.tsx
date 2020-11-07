@@ -2,7 +2,11 @@ import React, { useState, useCallback } from "react";
 
 import { TabsWrapper, Button } from "./Tabs.styles";
 
-function Tabs({ onSort }: any) {
+type Props = {
+  onSort: (param: "price" | "time") => void;
+};
+
+function Tabs({ onSort }: Props) {
   const [sortParam, setSortParam] = useState("price");
 
   const handleSortParam = useCallback(

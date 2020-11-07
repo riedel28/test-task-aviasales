@@ -72,12 +72,12 @@ function Filter({ filters, onFilter }: Props) {
         />
         <Label htmlFor="all">Все пересадки</Label>
       </Option>
-      {checkboxes.map((checkbox: any) => (
+      {checkboxes.map((checkbox) => (
         <Option key={checkbox.name}>
           <Checkbox
             id={checkbox.name}
             name={checkbox.name}
-            checked={checkedList.includes(checkbox.name)}
+            checked={checkedList.includes(checkbox.name as FilterType)}
             onChange={handleChange}
           />
           <Label htmlFor={checkbox.name}>{checkbox.label}</Label>

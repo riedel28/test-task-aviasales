@@ -1,4 +1,5 @@
 import React from "react";
+import { Ticket as TicketType } from "../../types";
 
 import {
   TicketWrapper,
@@ -12,7 +13,11 @@ import {
   CarrierLogo,
 } from "./Ticket.styles";
 
-function Ticket({ ticket }: any) {
+type Props = {
+  ticket: TicketType;
+};
+
+function Ticket({ ticket }: Props) {
   const formatFlightTime = (duration: number) => {
     const hours = Math.floor(duration / 60);
     const minutes = Math.round((hours - hours) * 60);
@@ -28,7 +33,7 @@ function Ticket({ ticket }: any) {
     const durationInMs = duration * 60 * 1000;
     const arrivalTimestamp = departureTimestamp + durationInMs;
 
-    const formatTimeToLocalString = (timestamp: any) => {
+    const formatTimeToLocalString = (timestamp: number) => {
       return new Date(timestamp).toLocaleTimeString("ru-RU", {
         hour: "2-digit",
         minute: "2-digit",
