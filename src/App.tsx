@@ -24,6 +24,7 @@ function App() {
 
   const [sortBy, setSortBy] = useState("price");
   const [filters, setFilter] = useState<FilterType[]>([
+    "all",
     "no-stops",
     "1 stop",
     "2 stops",
@@ -63,36 +64,35 @@ function App() {
   const handleSort = sortBy === "time" ? sortByTime : sortByPrice;
 
   const handleFilter = (item: Ticket) => {
-    const toFlightStopsLength = item.segments[0].stops.length;
-    const fromFlightStopsLength = item.segments[1].stops.length;
+    const getTicketByAmountOfStops = (ticket: Ticket, stops: number) => {
+      const [toFlight, fromFlight] = ticket.segments;
+      const toFlightStopsLength = toFlight.stops.length;
+      const fromFlightStopsLength = fromFlight.stops.length;
 
-    if (filters.includes("all")) {
-      return item;
-    }
+      if (toFlightStopsLength === stops && fromFlightStopsLength === stops) {
+        return ticket;
+      }
+    };
 
-    if (filters.includes("no-stops")) {
-      if (toFlightStopsLength === 0 && fromFlightStopsLength === 0) {
-        return item;
+    const filterFunctions = {
+      all: (ticket: Ticket) => ticket,
+      "no-stops": (ticket: Ticket) => getTicketByAmountOfStops(ticket, 0),
+      "1 stop": (ticket: Ticket) => getTicketByAmountOfStops(ticket, 1),
+      "2 stops": (ticket: Ticket) => getTicketByAmountOfStops(ticket, 2),
+      "3 stops": (ticket: Ticket) => getTicketByAmountOfStops(ticket, 3),
+    };
+
+    const fns = filters
+      .filter((fnName) => Object.keys(filterFunctions).includes(fnName))
+      .map((name) => filterFunctions[name]);
+
+    for (const fn of fns) {
+      if (fn(item)) {
+        return true;
       }
     }
 
-    if (filters.includes("1 stop")) {
-      if (toFlightStopsLength === 1 && fromFlightStopsLength === 1) {
-        return item;
-      }
-    }
-
-    if (filters.includes("2 stops")) {
-      if (toFlightStopsLength === 2 && fromFlightStopsLength === 2) {
-        return item;
-      }
-    }
-
-    if (filters.includes("3 stops")) {
-      if (toFlightStopsLength === 3 && fromFlightStopsLength === 3) {
-        return item;
-      }
-    }
+    return false;
   };
 
   const renderTicketList = () => {
