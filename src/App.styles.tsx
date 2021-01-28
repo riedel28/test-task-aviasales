@@ -19,6 +19,11 @@ export const RightColumn = styled.div`
   width: 502px;
 `;
 
+export const Loading = styled.div`
+  text-align: center;
+  padding-top: 30px;
+`;
+
 export const ErrorMessage = styled.div`
   text-align: center;
   padding-top: 30px;

@@ -4,6 +4,7 @@ import {
   Grid,
   LeftColumn,
   RightColumn,
+  Loading,
   ErrorMessage,
 } from "./App.styles";
 
@@ -14,15 +15,15 @@ import Switcher from "./components/Tabs/Tabs";
 import TicketList from "./components/TicketList/TicketList";
 import { getTickets } from "./api";
 
-import { FilterType, Ticket } from "./types";
+import { StatusType, FilterType, Ticket } from "./types";
 
 function App() {
-  const [tickets, setTickets] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [error, setError] = useState<{ message: string } | null>(null);
+  const [status, setStatus] = useState<StatusType>("idle");
 
   const [sortBy, setSortBy] = useState("price");
-  const [filters, setFilter] = useState<Array<FilterType>>([
+  const [filters, setFilter] = useState<FilterType[]>([
     "no-stops",
     "1 stop",
     "2 stops",
@@ -32,17 +33,17 @@ function App() {
   useEffect(() => {
     const fetchTickets = async () => {
       setError(null);
-      setIsLoading(true);
+      setStatus("loading");
 
       try {
         const tickets = await getTickets();
 
         setTickets(tickets);
+        setStatus("resolved");
       } catch (err) {
         setError(err);
+        setStatus("rejected");
       }
-
-      setIsLoading(false);
     };
 
     fetchTickets();
@@ -94,6 +95,28 @@ function App() {
     }
   };
 
+  const renderTicketList = () => {
+    switch (status) {
+      case "idle":
+        return <Loading>Loading...</Loading>;
+      case "loading":
+        return <Loading>Loading...</Loading>;
+      case "resolved":
+        return (
+          <TicketList tickets={tickets.filter(handleFilter).sort(handleSort)} />
+        );
+      case "rejected":
+        return (
+          <ErrorMessage>
+            Ошибка. Не удалось загрузить список билетов
+            <p>{error!.message}</p>
+          </ErrorMessage>
+        );
+      default:
+        throw new Error("Impossible status");
+    }
+  };
+
   return (
     <>
       <GlobalStyle />
@@ -105,16 +128,7 @@ function App() {
           </LeftColumn>
           <RightColumn>
             <Switcher onSort={setSortBy} />
-            {isLoading && <p>Loading...</p>}
-            {error ? (
-              <ErrorMessage>
-                Ошибка. Не удалось загрузить список билетов
-              </ErrorMessage>
-            ) : (
-              <TicketList
-                tickets={tickets.filter(handleFilter).sort(handleSort)}
-              />
-            )}
+            {renderTicketList()}
           </RightColumn>
         </Grid>
       </Container>

@@ -1,5 +1,7 @@
 export type FilterType = "all" | "no-stops" | "1 stop" | "2 stops" | "3 stops";
 
+export type StatusType = "idle" | "loading" | "resolved" | "rejected";
+
 export interface Ticket {
   // Цена в рублях
   price: number;
