@@ -4,6 +4,7 @@ import { Wrapper, Heading, Option, Checkbox, Label } from "./Filter.styles";
 import { FilterType } from "../../types";
 
 const checkboxes = [
+  { name: "all", label: "Все пересадки" },
   {
     name: "no-stops",
     label: "Без пересадок",
@@ -33,7 +34,11 @@ function Filter({ filters, onFilter }: Props) {
 
   useEffect(() => {
     setAllChecked(checkedList.length === checkboxes.length);
-    onFilter(allChecked ? ["all", ...checkedList] : checkedList);
+    onFilter(
+      allChecked
+        ? [...checkedList]
+        : checkedList.filter((filterName) => filterName !== "all")
+    );
   }, [allChecked, checkedList, onFilter]);
 
   const handleCheckAll = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,7 +77,7 @@ function Filter({ filters, onFilter }: Props) {
         />
         <Label htmlFor="all">Все пересадки</Label>
       </Option>
-      {checkboxes.map((checkbox) => (
+      {checkboxes.slice(1).map((checkbox) => (
         <Option key={checkbox.name}>
           <Checkbox
             id={checkbox.name}

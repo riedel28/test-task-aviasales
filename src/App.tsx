@@ -4,6 +4,7 @@ import {
   Grid,
   LeftColumn,
   RightColumn,
+  Loading,
   ErrorMessage,
 } from "./App.styles";
 
@@ -13,16 +14,17 @@ import Filter from "./components/Filter/Filter";
 import Switcher from "./components/Tabs/Tabs";
 import TicketList from "./components/TicketList/TicketList";
 import { getTickets } from "./api";
-
-import { FilterType, Ticket } from "./types";
+import { sortingFunctions, filterFunctions } from "./utils";
+import { StatusType, FilterType, Ticket, SortType } from "./types";
 
 function App() {
-  const [tickets, setTickets] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [error, setError] = useState<{ message: string } | null>(null);
+  const [status, setStatus] = useState<StatusType>("idle");
 
-  const [sortBy, setSortBy] = useState("price");
-  const [filters, setFilter] = useState<Array<FilterType>>([
+  const [sortBy, setSortBy] = useState<SortType>("price");
+  const [filters, setFilter] = useState<FilterType[]>([
+    "all",
     "no-stops",
     "1 stop",
     "2 stops",
@@ -32,65 +34,57 @@ function App() {
   useEffect(() => {
     const fetchTickets = async () => {
       setError(null);
-      setIsLoading(true);
+      setStatus("loading");
 
       try {
         const tickets = await getTickets();
 
         setTickets(tickets);
+        setStatus("resolved");
       } catch (err) {
         setError(err);
+        setStatus("rejected");
       }
-
-      setIsLoading(false);
     };
 
     fetchTickets();
   }, []);
 
-  const sortByPrice = (a: Ticket, b: Ticket) => {
-    return a.price - b.price;
-  };
-
-  const sortByTime = (a: Ticket, b: Ticket) => {
-    const totalFlightTime1 = a.segments[0].duration + a.segments[1].duration;
-    const totalFlightTime2 = b.segments[0].duration + b.segments[1].duration;
-
-    return totalFlightTime1 - totalFlightTime2;
-  };
-
-  const handleSort = sortBy === "time" ? sortByTime : sortByPrice;
+  const handleSort = sortingFunctions[sortBy];
 
   const handleFilter = (item: Ticket) => {
-    const toFlightStopsLength = item.segments[0].stops.length;
-    const fromFlightStopsLength = item.segments[1].stops.length;
+    const fns = filters
+      .filter((fnName) => Object.keys(filterFunctions).includes(fnName))
+      .map((name) => filterFunctions[name]);
 
-    if (filters.includes("all")) {
-      return item;
-    }
-
-    if (filters.includes("no-stops")) {
-      if (toFlightStopsLength === 0 && fromFlightStopsLength === 0) {
-        return item;
+    for (const fn of fns) {
+      if (fn(item)) {
+        return true;
       }
     }
 
-    if (filters.includes("1 stop")) {
-      if (toFlightStopsLength === 1 && fromFlightStopsLength === 1) {
-        return item;
-      }
-    }
+    return false;
+  };
 
-    if (filters.includes("2 stops")) {
-      if (toFlightStopsLength === 2 && fromFlightStopsLength === 2) {
-        return item;
-      }
-    }
-
-    if (filters.includes("3 stops")) {
-      if (toFlightStopsLength === 3 && fromFlightStopsLength === 3) {
-        return item;
-      }
+  const renderTicketList = () => {
+    switch (status) {
+      case "idle":
+        return <Loading>Loading...</Loading>;
+      case "loading":
+        return <Loading>Loading...</Loading>;
+      case "resolved":
+        return (
+          <TicketList tickets={tickets.filter(handleFilter).sort(handleSort)} />
+        );
+      case "rejected":
+        return (
+          <ErrorMessage>
+            Ошибка. Не удалось загрузить список билетов
+            <p>{error!.message}</p>
+          </ErrorMessage>
+        );
+      default:
+        throw new Error("Impossible status");
     }
   };
 
@@ -105,16 +99,7 @@ function App() {
           </LeftColumn>
           <RightColumn>
             <Switcher onSort={setSortBy} />
-            {isLoading && <p>Loading...</p>}
-            {error ? (
-              <ErrorMessage>
-                Ошибка. Не удалось загрузить список билетов
-              </ErrorMessage>
-            ) : (
-              <TicketList
-                tickets={tickets.filter(handleFilter).sort(handleSort)}
-              />
-            )}
+            {renderTicketList()}
           </RightColumn>
         </Grid>
       </Container>
