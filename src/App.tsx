@@ -14,15 +14,15 @@ import Filter from "./components/Filter/Filter";
 import Switcher from "./components/Tabs/Tabs";
 import TicketList from "./components/TicketList/TicketList";
 import { getTickets } from "./api";
-
-import { StatusType, FilterType, Ticket } from "./types";
+import { sortingFunctions, filterFunctions } from "./utils";
+import { StatusType, FilterType, Ticket, SortType } from "./types";
 
 function App() {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [error, setError] = useState<{ message: string } | null>(null);
   const [status, setStatus] = useState<StatusType>("idle");
 
-  const [sortBy, setSortBy] = useState("price");
+  const [sortBy, setSortBy] = useState<SortType>("price");
   const [filters, setFilter] = useState<FilterType[]>([
     "all",
     "no-stops",
@@ -50,38 +50,9 @@ function App() {
     fetchTickets();
   }, []);
 
-  const sortByPrice = (a: Ticket, b: Ticket) => {
-    return a.price - b.price;
-  };
-
-  const sortByTime = (a: Ticket, b: Ticket) => {
-    const totalFlightTime1 = a.segments[0].duration + a.segments[1].duration;
-    const totalFlightTime2 = b.segments[0].duration + b.segments[1].duration;
-
-    return totalFlightTime1 - totalFlightTime2;
-  };
-
-  const handleSort = sortBy === "time" ? sortByTime : sortByPrice;
+  const handleSort = sortingFunctions[sortBy];
 
   const handleFilter = (item: Ticket) => {
-    const getTicketByAmountOfStops = (ticket: Ticket, stops: number) => {
-      const [toFlight, fromFlight] = ticket.segments;
-      const toFlightStopsLength = toFlight.stops.length;
-      const fromFlightStopsLength = fromFlight.stops.length;
-
-      if (toFlightStopsLength === stops && fromFlightStopsLength === stops) {
-        return ticket;
-      }
-    };
-
-    const filterFunctions = {
-      all: (ticket: Ticket) => ticket,
-      "no-stops": (ticket: Ticket) => getTicketByAmountOfStops(ticket, 0),
-      "1 stop": (ticket: Ticket) => getTicketByAmountOfStops(ticket, 1),
-      "2 stops": (ticket: Ticket) => getTicketByAmountOfStops(ticket, 2),
-      "3 stops": (ticket: Ticket) => getTicketByAmountOfStops(ticket, 3),
-    };
-
     const fns = filters
       .filter((fnName) => Object.keys(filterFunctions).includes(fnName))
       .map((name) => filterFunctions[name]);
