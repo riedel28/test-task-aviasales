@@ -12,39 +12,20 @@ import {
   Subtitle,
   CarrierLogo,
 } from "./Ticket.styles";
+import {
+  formatFlightTime,
+  formatTime,
+  getTicketFlights,
+  getTicketPrice,
+} from "../../utils";
 
 type Props = {
   ticket: TicketType;
 };
 
 function Ticket({ ticket }: Props) {
-  const formatFlightTime = (duration: number) => {
-    const hours = Math.floor(duration / 60);
-    const minutes = Math.round((hours - hours) * 60);
-
-    return `${hours}ч ${minutes}м`;
-  };
-
-  const { price, segments } = ticket;
-  const [toFlight, fromFlight] = segments;
-
-  const formatTime = (departureDate: string, duration: number) => {
-    const departureTimestamp = Date.parse(departureDate);
-    const durationInMs = duration * 60 * 1000;
-    const arrivalTimestamp = departureTimestamp + durationInMs;
-
-    const formatTimeToLocalString = (timestamp: number) => {
-      return new Date(timestamp).toLocaleTimeString("ru-RU", {
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-    };
-
-    const departureTime = formatTimeToLocalString(departureTimestamp);
-    const arrivalTime = formatTimeToLocalString(arrivalTimestamp);
-
-    return `${departureTime} - ${arrivalTime}`;
-  };
+  const price = getTicketPrice(ticket);
+  const [toFlight, fromFlight] = getTicketFlights(ticket);
 
   return (
     <TicketWrapper>
