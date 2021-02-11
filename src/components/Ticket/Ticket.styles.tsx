@@ -1,10 +1,12 @@
 import styled from "styled-components";
 
+import * as colors from "../../styles/colors";
+
 export const TicketWrapper = styled.div`
   display: flex;
   padding: 0 20px 20px;
 
-  background: #ffffff;
+  background: ${colors.base};
   box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
 
@@ -33,7 +35,7 @@ export const Price = styled.p`
   letter-spacing: 0px;
   text-align: left;
 
-  color: #2196f3;
+  color: ${colors.blue};
   margin-top: 20px;
   margin-bottom: 26px;
 `;
@@ -52,7 +54,7 @@ export const Subtitle = styled.p`
   line-height: 18px;
   letter-spacing: 0.5px;
   text-align: left;
-  color: #a0b0b9;
+  color: ${colors.middlegrey};
   text-transform: uppercase;
 
   margin-top: 0;

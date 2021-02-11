@@ -1,5 +1,7 @@
 import styled from "styled-components";
 
+import * as colors from "../../styles/colors";
+
 export const TabsWrapper = styled.div`
   display: flex;
   width: 100%;
@@ -13,9 +15,10 @@ type ButtonProps = {
 };
 
 export const Button = styled.button`
-  background: ${(props: ButtonProps) => (props.active ? "#2196F3" : "#ffffff")};
-  color: ${(props: ButtonProps) => (props.active ? "#ffffff" : "#4a4a4a")};
-  border: 1px solid #dfe5ec;
+  background: ${(props: ButtonProps) =>
+    props.active ? colors.blue : colors.base};
+  color: ${(props: ButtonProps) => (props.active ? colors.base : colors.grey)};
+  border: 1px solid ${colors.lightgrey};
   flex: 1;
   padding: 15px;
 
