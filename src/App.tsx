@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
+
 import {
   Container,
   Grid,
   LeftColumn,
   RightColumn,
-  Loading,
   ErrorMessage,
 } from "./App.styles";
 
@@ -16,11 +16,12 @@ import TicketList from "./components/TicketList/TicketList";
 import { getTickets } from "./api";
 import { sortingFunctions, filterFunctions } from "./utils";
 import { StatusType, FilterType, Ticket, SortType } from "./types";
+import Skeleton from "./components/Skeleton/Skeleton";
 
 function App() {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [error, setError] = useState<{ message: string } | null>(null);
-  const [status, setStatus] = useState<StatusType>("idle");
+  const [status, setStatus] = useState<StatusType>("loading");
 
   const [sortBy, setSortBy] = useState<SortType>("price");
   const [filters, setFilter] = useState<FilterType[]>([
@@ -66,15 +67,25 @@ function App() {
     return false;
   };
 
+  const renderSkeletonTickets = () => {
+    const skeletonTickets = Array.from({ length: 5 });
+
+    return skeletonTickets.map((ticket: any) => <Skeleton />);
+  };
+
   const renderTicketList = () => {
     switch (status) {
       case "idle":
-        return <Loading>Loading...</Loading>;
+        return renderSkeletonTickets();
       case "loading":
-        return <Loading>Loading...</Loading>;
+        return renderSkeletonTickets();
       case "resolved":
         return (
-          <TicketList tickets={tickets.filter(handleFilter).sort(handleSort)} />
+          <>
+            <TicketList
+              tickets={tickets.filter(handleFilter).sort(handleSort)}
+            />
+          </>
         );
       case "rejected":
         return (
