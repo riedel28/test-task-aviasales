@@ -19,7 +19,7 @@ import {
   getTicketPrice,
 } from "../../utils";
 
-type Props = {
+export type Props = {
   ticket: TicketType;
 };
 
