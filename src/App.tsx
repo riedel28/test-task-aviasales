@@ -70,7 +70,7 @@ function App() {
   const renderSkeletonTickets = () => {
     const skeletonTickets = Array.from({ length: 5 });
 
-    return skeletonTickets.map((ticket: any) => <Skeleton />);
+    return skeletonTickets.map((_ticket, index) => <Skeleton key={index} />);
   };
 
   const renderTicketList = () => {
