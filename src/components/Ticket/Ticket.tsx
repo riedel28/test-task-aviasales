@@ -15,6 +15,8 @@ import {
 import {
   formatFlightTime,
   formatTime,
+  formatPrice,
+  formatStops,
   getTicketFlights,
   getTicketPrice,
 } from "../../utils";
@@ -27,10 +29,19 @@ function Ticket({ ticket }: Props) {
   const price = getTicketPrice(ticket);
   const [toFlight, fromFlight] = getTicketFlights(ticket);
 
+  console.log({
+    "toFlight.stops.length": toFlight.stops.length,
+    "fromFlight.stops.length": fromFlight.stops.length,
+    "formatStops(toFlight.stops.length)": formatStops(toFlight.stops.length),
+    "formatStops(fromFlight.stops.length)": formatStops(
+      fromFlight.stops.length
+    ),
+  });
+
   return (
     <TicketWrapper>
       <LeftColumn>
-        <Price>{price.toLocaleString("ru-RU")} Р</Price>
+        <Price>{formatPrice(price)}</Price>
         <InfoWrapper>
           <Subtitle>
             {toFlight.origin} - {toFlight.destination}
@@ -48,7 +59,7 @@ function Ticket({ ticket }: Props) {
       <MiddleColumn>
         <InfoWrapper>
           <Subtitle>В пути</Subtitle>
-          <Info>{formatFlightTime(toFlight.duration)}</Info>
+          <Info>{formatFlightTime(toFlight.duration)} &nbsp;</Info>
         </InfoWrapper>
         <InfoWrapper>
           <Subtitle>В пути</Subtitle>
@@ -58,30 +69,12 @@ function Ticket({ ticket }: Props) {
       <RightColumn>
         <CarrierLogo src={`//pics.avs.io/99/36/${ticket.carrier}.png`} />
         <InfoWrapper>
-          {toFlight.stops.length > 0 ? (
-            <>
-              <Subtitle>{toFlight.stops.length} пересадки</Subtitle>
-              <Info>{toFlight.stops.join(", ")}</Info>
-            </>
-          ) : (
-            <>
-              <Subtitle>Без пересадок</Subtitle>
-              <Info>&nbsp;</Info>
-            </>
-          )}
+          <Subtitle>{formatStops(fromFlight.stops.length)}</Subtitle>
+          <Info>{fromFlight.stops.join(", ")}</Info>
         </InfoWrapper>
         <InfoWrapper>
-          {fromFlight.stops.length > 0 ? (
-            <>
-              <Subtitle>{fromFlight.stops.length} пересадки</Subtitle>
-              <Info>{fromFlight.stops.join(", ")}</Info>
-            </>
-          ) : (
-            <>
-              <Subtitle>Без пересадок</Subtitle>
-              <Info>&nbsp;</Info>
-            </>
-          )}
+          <Subtitle>{formatStops(toFlight.stops.length)}</Subtitle>
+          <Info>{toFlight.stops.join(", ")}</Info>
         </InfoWrapper>
       </RightColumn>
     </TicketWrapper>
