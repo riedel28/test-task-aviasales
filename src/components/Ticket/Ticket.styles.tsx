@@ -74,6 +74,7 @@ export const Info = styled.p`
   text-align: left;
   margin-top: 0;
   margin-bottom: 0;
+  min-height: 36px;
 `;
 
 export const MiddleColumn = styled.div`
