@@ -25,6 +25,34 @@ export const formatTime = (departureDate: string, duration: number) => {
   return `${departureTime} - ${arrivalTime}`;
 };
 
+export const formatPrice = (price: number) => {
+  return `${price.toLocaleString("ru-RU")} Р`;
+};
+
+const declOfNum = (n: number, textForms: string[]) => {
+  n = Math.abs(n) % 100;
+  const n1 = n % 10;
+  if (n > 10 && n < 20) {
+    return textForms[2];
+  }
+  if (n1 > 1 && n1 < 5) {
+    return textForms[1];
+  }
+  if (n1 === 1) {
+    return textForms[0];
+  }
+
+  return textForms[2];
+};
+
+export const formatStops = (num: number) => {
+  if (num === 0) {
+    return "Без пересадок";
+  }
+
+  return `${num} ${declOfNum(num, ["пересадка", "пересадки", "пересадок"])}`;
+};
+
 export const getTicketByAmountOfStops = (ticket: Ticket, stops: number) => {
   const [toFlight, fromFlight] = ticket.segments;
   const toFlightStopsLength = toFlight.stops.length;
