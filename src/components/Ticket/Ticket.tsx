@@ -29,15 +29,6 @@ function Ticket({ ticket }: Props) {
   const price = getTicketPrice(ticket);
   const [toFlight, fromFlight] = getTicketFlights(ticket);
 
-  console.log({
-    "toFlight.stops.length": toFlight.stops.length,
-    "fromFlight.stops.length": fromFlight.stops.length,
-    "formatStops(toFlight.stops.length)": formatStops(toFlight.stops.length),
-    "formatStops(fromFlight.stops.length)": formatStops(
-      fromFlight.stops.length
-    ),
-  });
-
   return (
     <TicketWrapper>
       <LeftColumn>
