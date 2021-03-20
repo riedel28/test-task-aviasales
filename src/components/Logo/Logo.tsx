@@ -4,7 +4,7 @@ import { LogoContainer } from "./Logo.styles";
 
 export default function Logo() {
   return (
-    <LogoContainer>
+    <LogoContainer data-testid="logo">
       <svg
         width="82"
         height="89"
