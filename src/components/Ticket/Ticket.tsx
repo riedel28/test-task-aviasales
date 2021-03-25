@@ -12,44 +12,27 @@ import {
   Subtitle,
   CarrierLogo,
 } from "./Ticket.styles";
+import {
+  formatFlightTime,
+  formatTime,
+  formatPrice,
+  formatStops,
+  getTicketFlights,
+  getTicketPrice,
+} from "../../utils";
 
-type Props = {
+export type Props = {
   ticket: TicketType;
 };
 
 function Ticket({ ticket }: Props) {
-  const formatFlightTime = (duration: number) => {
-    const hours = Math.floor(duration / 60);
-    const minutes = Math.round((hours - hours) * 60);
-
-    return `${hours}ч ${minutes}м`;
-  };
-
-  const { price, segments } = ticket;
-  const [toFlight, fromFlight] = segments;
-
-  const formatTime = (departureDate: string, duration: number) => {
-    const departureTimestamp = Date.parse(departureDate);
-    const durationInMs = duration * 60 * 1000;
-    const arrivalTimestamp = departureTimestamp + durationInMs;
-
-    const formatTimeToLocalString = (timestamp: number) => {
-      return new Date(timestamp).toLocaleTimeString("ru-RU", {
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-    };
-
-    const departureTime = formatTimeToLocalString(departureTimestamp);
-    const arrivalTime = formatTimeToLocalString(arrivalTimestamp);
-
-    return `${departureTime} - ${arrivalTime}`;
-  };
+  const price = getTicketPrice(ticket);
+  const [toFlight, fromFlight] = getTicketFlights(ticket);
 
   return (
     <TicketWrapper>
       <LeftColumn>
-        <Price>{price.toLocaleString("ru-RU")} Р</Price>
+        <Price>{formatPrice(price)}</Price>
         <InfoWrapper>
           <Subtitle>
             {toFlight.origin} - {toFlight.destination}
@@ -67,7 +50,7 @@ function Ticket({ ticket }: Props) {
       <MiddleColumn>
         <InfoWrapper>
           <Subtitle>В пути</Subtitle>
-          <Info>{formatFlightTime(toFlight.duration)}</Info>
+          <Info>{formatFlightTime(toFlight.duration)} &nbsp;</Info>
         </InfoWrapper>
         <InfoWrapper>
           <Subtitle>В пути</Subtitle>
@@ -77,30 +60,12 @@ function Ticket({ ticket }: Props) {
       <RightColumn>
         <CarrierLogo src={`//pics.avs.io/99/36/${ticket.carrier}.png`} />
         <InfoWrapper>
-          {toFlight.stops.length > 0 ? (
-            <>
-              <Subtitle>{toFlight.stops.length} пересадки</Subtitle>
-              <Info>{toFlight.stops.join(", ")}</Info>
-            </>
-          ) : (
-            <>
-              <Subtitle>Без пересадок</Subtitle>
-              <Info>&nbsp;</Info>
-            </>
-          )}
+          <Subtitle>{formatStops(fromFlight.stops.length)}</Subtitle>
+          <Info>{fromFlight.stops.join(", ")}</Info>
         </InfoWrapper>
         <InfoWrapper>
-          {fromFlight.stops.length > 0 ? (
-            <>
-              <Subtitle>{fromFlight.stops.length} пересадки</Subtitle>
-              <Info>{fromFlight.stops.join(", ")}</Info>
-            </>
-          ) : (
-            <>
-              <Subtitle>Без пересадок</Subtitle>
-              <Info>&nbsp;</Info>
-            </>
-          )}
+          <Subtitle>{formatStops(toFlight.stops.length)}</Subtitle>
+          <Info>{toFlight.stops.join(", ")}</Info>
         </InfoWrapper>
       </RightColumn>
     </TicketWrapper>

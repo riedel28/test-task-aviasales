@@ -30,7 +30,7 @@ type Props = {
 
 function Filter({ filters, onFilter }: Props) {
   const [checkedList, setCheckedList] = useState<Array<FilterType>>(filters);
-  const [allChecked, setAllChecked] = useState(false);
+  const [allChecked, setAllChecked] = useState(true);
 
   useEffect(() => {
     setAllChecked(checkedList.length === checkboxes.length);
