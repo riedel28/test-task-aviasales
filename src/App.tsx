@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { useQuery } from "react-query";
 
 import {
   Container,
@@ -7,22 +8,17 @@ import {
   RightColumn,
   ErrorMessage,
 } from "./App.styles";
-
 import GlobalStyle from "./globalStyle";
 import Logo from "./components/Logo/Logo";
 import Filter from "./components/Filter/Filter";
 import Switcher from "./components/Tabs/Tabs";
 import TicketList from "./components/TicketList/TicketList";
-import { getTickets } from "./api";
+import { getSearchId, getTickets } from "./api";
 import { sortingFunctions, filterFunctions } from "./utils";
-import { StatusType, FilterType, Ticket, SortType } from "./types";
+import { FilterType, Ticket, SortType } from "./types";
 import Skeleton from "./components/Skeleton/Skeleton";
 
 function App() {
-  const [tickets, setTickets] = useState<Ticket[]>([]);
-  const [error, setError] = useState<{ message: string } | null>(null);
-  const [status, setStatus] = useState<StatusType>("loading");
-
   const [sortBy, setSortBy] = useState<SortType>("price");
   const [filters, setFilter] = useState<FilterType[]>([
     "all",
@@ -32,24 +28,12 @@ function App() {
     "3 stops",
   ]);
 
-  useEffect(() => {
-    const fetchTickets = async () => {
-      setError(null);
-      setStatus("loading");
-
-      try {
-        const tickets = await getTickets();
-
-        setTickets(tickets);
-        setStatus("resolved");
-      } catch (err) {
-        setError(err);
-        setStatus("rejected");
-      }
-    };
-
-    fetchTickets();
-  }, []);
+  const { data: searchId } = useQuery("searchId", getSearchId);
+  const {
+    data: tickets,
+    status,
+    error,
+  } = useQuery<Ticket[], Error>("tickets", () => getTickets(searchId));
 
   const handleSort = sortingFunctions[sortBy];
 
@@ -79,15 +63,15 @@ function App() {
         return renderSkeletonTickets();
       case "loading":
         return renderSkeletonTickets();
-      case "resolved":
+      case "success":
         return (
           <>
             <TicketList
-              tickets={tickets.filter(handleFilter).sort(handleSort)}
+              tickets={tickets!.filter(handleFilter).sort(handleSort)}
             />
           </>
         );
-      case "rejected":
+      case "error":
         return (
           <ErrorMessage>
             Ошибка. Не удалось загрузить список билетов
