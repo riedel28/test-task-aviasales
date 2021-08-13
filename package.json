@@ -36,10 +36,21 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint src",
-    "lint:fix": "eslint src --fix"
+    "lint:fix": "eslint src --fix",
+    "prettier:check": "npx prettier --check './src/**/*.{js,jsx,ts,tsx,css,html,json}'",
+    "prettier:format": "npx prettier --write './src/**/*.{js,jsx,ts,tsx,css,html,json}'"
   },
-  "eslintConfig": {
-    "extends": "react-app"
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.{ts,tsx}": [
+      "npm run lint:fix",
+      "npm run prettier:format",
+      "git add"
+    ]
   },
   "browserslist": {
     "production": [
