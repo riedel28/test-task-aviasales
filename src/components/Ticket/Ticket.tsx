@@ -1,5 +1,5 @@
-import React from "react";
-import { Ticket as TicketType } from "../../types";
+import React from 'react';
+import { Ticket as TicketType } from '../../types';
 
 import {
   TicketWrapper,
@@ -10,16 +10,16 @@ import {
   InfoWrapper,
   Info,
   Subtitle,
-  CarrierLogo,
-} from "./Ticket.styles";
+  CarrierLogo
+} from './Ticket.styles';
 import {
   formatFlightTime,
   formatTime,
   formatPrice,
   formatStops,
   getTicketFlights,
-  getTicketPrice,
-} from "../../utils";
+  getTicketPrice
+} from '../../utils';
 
 export type Props = {
   ticket: TicketType;
@@ -61,11 +61,11 @@ function Ticket({ ticket }: Props) {
         <CarrierLogo src={`//pics.avs.io/99/36/${ticket.carrier}.png`} />
         <InfoWrapper>
           <Subtitle>{formatStops(fromFlight.stops.length)}</Subtitle>
-          <Info>{fromFlight.stops.join(", ")}</Info>
+          <Info>{fromFlight.stops.join(', ')}</Info>
         </InfoWrapper>
         <InfoWrapper>
           <Subtitle>{formatStops(toFlight.stops.length)}</Subtitle>
-          <Info>{toFlight.stops.join(", ")}</Info>
+          <Info>{toFlight.stops.join(', ')}</Info>
         </InfoWrapper>
       </RightColumn>
     </TicketWrapper>

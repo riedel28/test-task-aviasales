@@ -1,14 +1,14 @@
-import React from "react";
-import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import React from 'react';
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
-import * as colors from "../../styles/colors";
+import * as colors from '../../styles/colors';
 import {
   TicketWrapper,
   LeftColumn,
   InfoWrapper,
   MiddleColumn,
-  RightColumn,
-} from "../Ticket/Ticket.styles";
+  RightColumn
+} from '../Ticket/Ticket.styles';
 
 const BigPlaceHolder = () => (
   <Skeleton
@@ -39,7 +39,7 @@ const LoadingSkeleton = () => (
       </LeftColumn>
 
       <MiddleColumn>
-        <InfoWrapper style={{ marginTop: "-5px" }}>
+        <InfoWrapper style={{ marginTop: '-5px' }}>
           <SmallPlaceholder />
           <SmallPlaceholder />
         </InfoWrapper>

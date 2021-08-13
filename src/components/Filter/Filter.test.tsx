@@ -1,42 +1,45 @@
-import React from "react";
-import { render, fireEvent } from "@testing-library/react";
+import React from 'react';
+import { render, fireEvent } from '@testing-library/react';
 
-import Filter from "./Filter";
-import { FilterType } from "../../types";
+import Filter from './Filter';
+import { FilterType } from '../../types';
 
-describe("Filter", () => {
+describe('Filter', () => {
   const filters: FilterType[] = [
-    "all",
-    "no-stops",
-    "1 stop",
-    "2 stops",
-    "3 stops",
+    'all',
+    'no-stops',
+    '1 stop',
+    '2 stops',
+    '3 stops'
   ];
 
-  test("renders correctly", () => {
+  test('renders correctly', () => {
+    const handleFilter = jest.fn();
     const { getByText } = render(
-      <Filter filters={filters} onFilter={() => {}} />
+      <Filter filters={filters} onFilter={handleFilter} />
     );
 
-    expect(getByText("Количество пересадок")).toBeInTheDocument();
+    expect(getByText('Количество пересадок')).toBeInTheDocument();
   });
 
-  test("renders all checkboxes", () => {
+  test('renders all checkboxes', () => {
+    const handleFilter = jest.fn();
     const { getAllByRole } = render(
-      <Filter filters={filters} onFilter={() => {}} />
+      <Filter filters={filters} onFilter={handleFilter} />
     );
 
-    const checkboxes = getAllByRole("checkbox");
+    const checkboxes = getAllByRole('checkbox');
 
     expect(checkboxes).toHaveLength(5);
   });
 
-  test("toggles checkbox", () => {
+  test('toggles checkbox', () => {
+    const handleFilter = jest.fn();
     const { getByLabelText } = render(
-      <Filter filters={filters} onFilter={() => {}} />
+      <Filter filters={filters} onFilter={handleFilter} />
     );
 
-    const firstCheckbox = getByLabelText("Все пересадки");
+    const firstCheckbox = getByLabelText('Все пересадки');
 
     expect(firstCheckbox).toBeChecked();
 
@@ -46,11 +49,12 @@ describe("Filter", () => {
   });
 
   test("unchecks all checkboxes by unchecking on 'All stops' checkbox", () => {
+    const handleFilter = jest.fn();
     const { getAllByRole } = render(
-      <Filter filters={filters} onFilter={() => {}} />
+      <Filter filters={filters} onFilter={handleFilter} />
     );
 
-    const allCheckboxes = getAllByRole("checkbox");
+    const allCheckboxes = getAllByRole('checkbox');
     const [firstCheckbox] = allCheckboxes;
 
     allCheckboxes.forEach((checkbox) => {
@@ -65,10 +69,11 @@ describe("Filter", () => {
   });
 
   test("unchecks 'All stops' checkbox by clicking on at least one other checkbox", () => {
+    const handleFilter = jest.fn();
     const { getAllByRole } = render(
-      <Filter filters={filters} onFilter={() => {}} />
+      <Filter filters={filters} onFilter={handleFilter} />
     );
-    const allCheckboxes = getAllByRole("checkbox");
+    const allCheckboxes = getAllByRole('checkbox');
     const [firstCheckbox] = allCheckboxes;
 
     expect(firstCheckbox).toBeChecked();
@@ -79,12 +84,12 @@ describe("Filter", () => {
     expect(firstCheckbox).not.toBeChecked();
   });
 
-  test("onFilter function runs on every checkbox change", () => {
+  test('onFilter function runs on every checkbox change', () => {
     const onFilterMock = jest.fn();
     const { getAllByRole } = render(
       <Filter filters={filters} onFilter={onFilterMock} />
     );
-    const allCheckboxes = getAllByRole("checkbox");
+    const allCheckboxes = getAllByRole('checkbox');
 
     fireEvent.click(allCheckboxes[1]);
 

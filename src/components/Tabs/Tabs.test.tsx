@@ -1,32 +1,32 @@
-import React from "react";
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
-import Tabs from "./Tabs";
+import Tabs from './Tabs';
 
-describe("Tabs", () => {
-  test("should render correctly", () => {
+describe('Tabs', () => {
+  test('should render correctly', () => {
     const handleSortMock = jest.fn();
     render(<Tabs onSort={handleSortMock} />);
 
     expect(
-      screen.getByRole("button", { name: /самый дешевый/i })
+      screen.getByRole('button', { name: /самый дешевый/i })
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: /самый быстрый/i })
+      screen.getByRole('button', { name: /самый быстрый/i })
     ).toBeInTheDocument();
   });
 
-  test("should change sort param type", () => {
+  test('should change sort param type', () => {
     const handleSortMock = jest.fn();
     render(<Tabs onSort={handleSortMock} />);
 
-    userEvent.click(screen.getByRole("button", { name: /самый дешевый/i }));
+    userEvent.click(screen.getByRole('button', { name: /самый дешевый/i }));
 
-    expect(handleSortMock).toBeCalledWith("price");
+    expect(handleSortMock).toBeCalledWith('price');
 
-    userEvent.click(screen.getByRole("button", { name: /самый быстрый/i }));
+    userEvent.click(screen.getByRole('button', { name: /самый быстрый/i }));
 
-    expect(handleSortMock).toBeCalledWith("time");
+    expect(handleSortMock).toBeCalledWith('time');
   });
 });

@@ -1,4 +1,4 @@
-import { Ticket, SortType, FilterType } from "./types.d";
+import { Ticket, SortType, FilterType, Flight } from './types.d';
 
 export const formatFlightTime = (duration: number) => {
   const hours = Math.floor(duration / 60);
@@ -13,9 +13,9 @@ export const formatTime = (departureDate: string, duration: number) => {
   const arrivalTimestamp = departureTimestamp + durationInMs;
 
   const formatTimeToLocalString = (timestamp: number) => {
-    return new Date(timestamp).toLocaleTimeString("ru-RU", {
-      hour: "2-digit",
-      minute: "2-digit",
+    return new Date(timestamp).toLocaleTimeString('ru-RU', {
+      hour: '2-digit',
+      minute: '2-digit'
     });
   };
 
@@ -26,7 +26,7 @@ export const formatTime = (departureDate: string, duration: number) => {
 };
 
 export const formatPrice = (price: number) => {
-  return `${price.toLocaleString("ru-RU")} Р`;
+  return `${price.toLocaleString('ru-RU')} Р`;
 };
 
 const declOfNum = (n: number, textForms: string[]) => {
@@ -47,10 +47,10 @@ const declOfNum = (n: number, textForms: string[]) => {
 
 export const formatStops = (num: number) => {
   if (num === 0) {
-    return "Без пересадок";
+    return 'Без пересадок';
   }
 
-  return `${num} ${declOfNum(num, ["пересадка", "пересадки", "пересадок"])}`;
+  return `${num} ${declOfNum(num, ['пересадка', 'пересадки', 'пересадок'])}`;
 };
 
 export const getTicketByAmountOfStops = (ticket: Ticket, stops: number) => {
@@ -63,7 +63,7 @@ export const getTicketByAmountOfStops = (ticket: Ticket, stops: number) => {
   }
 };
 
-export const getFlightDuration = (flight: any) => flight.duration;
+export const getFlightDuration = (flight: Flight) => flight.duration;
 export const getTicketFlights = (ticket: Ticket) => ticket.segments;
 export const getTicketPrice = (ticket: Ticket) => ticket.price;
 
@@ -91,15 +91,15 @@ export const sortingFunctions: {
   [key in SortType]: (a: Ticket, b: Ticket) => number;
 } = {
   price: sortByPrice,
-  time: sortByTime,
+  time: sortByTime
 };
 
 export const filterFunctions: {
   [key in FilterType]: (ticket: Ticket) => Ticket | undefined;
 } = {
   all: (ticket: Ticket) => ticket,
-  "no-stops": (ticket: Ticket) => getTicketByAmountOfStops(ticket, 0),
-  "1 stop": (ticket: Ticket) => getTicketByAmountOfStops(ticket, 1),
-  "2 stops": (ticket: Ticket) => getTicketByAmountOfStops(ticket, 2),
-  "3 stops": (ticket: Ticket) => getTicketByAmountOfStops(ticket, 3),
+  'no-stops': (ticket: Ticket) => getTicketByAmountOfStops(ticket, 0),
+  '1 stop': (ticket: Ticket) => getTicketByAmountOfStops(ticket, 1),
+  '2 stops': (ticket: Ticket) => getTicketByAmountOfStops(ticket, 2),
+  '3 stops': (ticket: Ticket) => getTicketByAmountOfStops(ticket, 3)
 };
