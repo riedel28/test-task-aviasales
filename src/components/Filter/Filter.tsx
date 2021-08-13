@@ -1,26 +1,26 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect } from 'react';
 
-import { Wrapper, Heading, Option, Checkbox, Label } from "./Filter.styles";
-import { FilterType } from "../../types";
+import { Wrapper, Heading, Option, Checkbox, Label } from './Filter.styles';
+import { FilterType } from '../../types';
 
 const checkboxes = [
-  { name: "all", label: "Все пересадки" },
+  { name: 'all', label: 'Все пересадки' },
   {
-    name: "no-stops",
-    label: "Без пересадок",
+    name: 'no-stops',
+    label: 'Без пересадок'
   },
   {
-    name: "1 stop",
-    label: "1 пересадка",
+    name: '1 stop',
+    label: '1 пересадка'
   },
   {
-    name: "2 stops",
-    label: "2 пересадки",
+    name: '2 stops',
+    label: '2 пересадки'
   },
   {
-    name: "3 stops",
-    label: "3 пересадки",
-  },
+    name: '3 stops',
+    label: '3 пересадки'
+  }
 ];
 
 type Props = {
@@ -37,7 +37,7 @@ function Filter({ filters, onFilter }: Props) {
     onFilter(
       allChecked
         ? [...checkedList]
-        : checkedList.filter((filterName) => filterName !== "all")
+        : checkedList.filter((filterName) => filterName !== 'all')
     );
   }, [allChecked, checkedList, onFilter]);
 

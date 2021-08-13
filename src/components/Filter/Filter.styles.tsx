@@ -1,6 +1,6 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
-import * as colors from "../../styles/colors";
+import * as colors from '../../styles/colors';
 
 export const Wrapper = styled.div`
   padding: 10px 0;
@@ -40,7 +40,7 @@ export const Label = styled.label`
   cursor: pointer;
 `;
 
-export const Checkbox = styled.input.attrs({ type: "checkbox" })`
+export const Checkbox = styled.input.attrs({ type: 'checkbox' })`
   background: ${colors.blue};
   margin-right: 10px;
   width: 20px;

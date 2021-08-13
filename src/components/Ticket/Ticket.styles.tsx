@@ -1,6 +1,6 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
-import * as colors from "../../styles/colors";
+import * as colors from '../../styles/colors';
 
 export const TicketWrapper = styled.div`
   display: flex;

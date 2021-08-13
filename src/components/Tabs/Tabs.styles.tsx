@@ -1,6 +1,6 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
-import * as colors from "../../styles/colors";
+import * as colors from '../../styles/colors';
 
 export const TabsWrapper = styled.div`
   display: flex;
@@ -30,9 +30,9 @@ export const Button = styled.button`
   text-transform: uppercase;
   text-align: center;
 
-  border-left: ${(props: ButtonProps) => (props.right ? "none" : "0")};
+  border-left: ${(props: ButtonProps) => (props.right ? 'none' : '0')};
   border-radius: ${(props: ButtonProps) =>
-    props.left ? "0 5px 5px 0" : "5px 0 0 5px"};
+    props.left ? '0 5px 5px 0' : '5px 0 0 5px'};
   cursor: pointer;
   outline: none;
 `;

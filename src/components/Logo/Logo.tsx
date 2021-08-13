@@ -1,6 +1,6 @@
-import React from "react";
+import React from 'react';
 
-import { LogoContainer } from "./Logo.styles";
+import { LogoContainer } from './Logo.styles';
 
 export default function Logo() {
   return (
