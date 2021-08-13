@@ -1,8 +1,8 @@
-export type SortType = "price" | "time";
+export type SortType = 'price' | 'time';
 
-export type FilterType = "all" | "no-stops" | "1 stop" | "2 stops" | "3 stops";
+export type FilterType = 'all' | 'no-stops' | '1 stop' | '2 stops' | '3 stops';
 
-export type StatusType = "idle" | "loading" | "resolved" | "rejected";
+export type StatusType = 'idle' | 'loading' | 'resolved' | 'rejected';
 
 export interface Ticket {
   // Цена в рублях
@@ -37,4 +37,12 @@ export interface Ticket {
       duration: number;
     }
   ];
+}
+
+export interface Flight {
+  origin: string;
+  destination: string;
+  date: string;
+  stops: string[];
+  duration: number;
 }
